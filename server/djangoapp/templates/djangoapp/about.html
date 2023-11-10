@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Best Cars</title>
+    <title>Dealership Review</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -16,7 +16,7 @@
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Best Cars</a>
+                <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Dealership Review</a>
             </div>
             <div class="navbar-header">
                 <a class="btn btn-link" href="#">About Us</a>
@@ -25,15 +25,15 @@
                 <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">Contact Us</a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <!-- {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
                 <li>
-                    <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-                    <a class="btn btn-link" href="{% url 'onlinecourse:logout' %}">Logout</a>
+                    <a class="btn btn-link" href="{% url 'djangoapp:index' %}">{{ user.first_name }}({{ user.username }})</a>
+                    <a class="btn btn-link" href="">Logout</a>
                 </li>
-                {% else %} -->
+                {% else %}
                 <li>
                     <form class="form-inline" action="" method="post">
-                        <!-- {% csrf_token %} -->
+                        {% csrf_token %}
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Username" name="username" >
                             <input type="password" class="form-control" placeholder="Password" name="psw" >
@@ -42,7 +42,7 @@
                         </div>
                     </form>
                 </li>
-                <!-- {% endif %} -->
+                {% endif %}
             </ul>
         </div>
     </nav>
