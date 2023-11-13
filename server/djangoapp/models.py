@@ -25,3 +25,12 @@ from django.utils.timezone import now
 
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
+
+class User(models.Model):
+    username = models.CharField(max_length=30, unique=True)
+    password = models.CharField(max_length=128)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.username
