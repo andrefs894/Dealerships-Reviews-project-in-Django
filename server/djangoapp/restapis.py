@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
 
@@ -40,9 +40,9 @@ def get_dealers_from_cf(url, **kwargs):
 def get_dealer_by_id_from_cf(url, id):
     results = []
     json_result = get_request(url, id=id)
+    print(f"json_result {json_result}")
     if json_result:
         dealers = json_result
-        print(dealers)
         for dealer in dealers:
             dealer_doc = dealer
             if dealer_doc["id"] == id:
