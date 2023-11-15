@@ -12,5 +12,6 @@ urlpatterns = [
     path('login/', views.login_request, name='login'),
     path('logout/', views.logout_request, name='logout'),
     path(route='', view=views.get_dealerships, name='index'),
+    path('dealer/<int:id>/', views.get_dealer_details, name='dealer_details')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

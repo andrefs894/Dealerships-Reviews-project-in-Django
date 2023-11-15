@@ -36,12 +36,13 @@ def get_dealers_from_cf(url, **kwargs):
             results.append(dealer_obj)
     return results
 
-# get reviews by dealer id
+# get dealers from cloud function, by dealer id
 def get_dealer_by_id_from_cf(url, id):
     results = []
     json_result = get_request(url, id=id)
     if json_result:
         dealers = json_result
+        print(dealers)
         for dealer in dealers:
             dealer_doc = dealer
             if dealer_doc["id"] == id:
@@ -57,6 +58,7 @@ def get_dealer_by_id_from_cf(url, id):
                 results.append(dealer_obj)
     return results[0]
 
+# get dealer reviews from cloud function
 def get_dealer_reviews_from_cf(url, **kwargs):
     results = []
     id = kwargs.get("id")
@@ -81,9 +83,9 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                 review_obj.car_model = dealer_review["car_model"]
             if "car_year" in dealer_review:
                 review_obj.car_year = dealer_review["car_year"]
-            sentiment = analyze_review_sentiments(review_obj.review)
+            """sentiment = analyze_review_sentiments(review_obj.review)
             print(sentiment)
-            review_obj.sentiment = sentiment
+            review_obj.sentiment = sentiment"""
             results.append(review_obj)
     return results
 
