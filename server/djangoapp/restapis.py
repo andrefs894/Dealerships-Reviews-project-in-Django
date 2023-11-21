@@ -5,26 +5,43 @@ from requests.auth import HTTPBasicAuth
 
 
 # http get requests
-def get_request(url, **kwargs):
+def get_request(url, api_key=False, **kwargs):
     # print(kwargs)
     # print("GET from {} ".format(url))
-    try:
-        if "3000" in url:
-            print("3000")
-            response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                        params={'id': kwargs.get("id")})
-        if "5000" in url:
-            response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                        params={'dealership': kwargs.get("id")})
-    except:
-        print("Network exception occurred")
+    if api_key:
+        try:
+            if "3000" in url:
+                response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                            params={'id': kwargs.get("id")},
+                                            auth=HTTPBasicAuth('apikey', api_key))
+            if "5000" in url:
+                response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                            params={'dealership': kwargs.get("id")},
+                                            auth=HTTPBasicAuth('apikey', api_key))
+        except:
+            print("Network exception occurred")
+    else:
+        try:
+            if "3000" in url:
+                response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                            params={'id': kwargs.get("id")})
+            if "5000" in url:
+                response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                            params={'dealership': kwargs.get("id")})
+        except:
+            print("Network exception occurred")
     # status_code = response.status_code
     # print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
     return json_data
 
-# Create a `post_request` to make HTTP POST requests
-# e.g., response = requests.post(url, params=kwargs, json=payload)
+# http post requests
+def post_request(url, json_payload, **kwargs):
+    try:
+        response = requests.post(url, params=kwargs, json=json_payload)
+    except:
+        print("Network exception occurred")
+    return response
 
 # get dealers from cloud function
 def get_dealers_from_cf(url, **kwargs):
@@ -73,7 +90,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     if json_result:
         reviews = json_result
         for dealer_review in reviews:
-            if "purchase_date" not in dealer_review:
+            if dealer_review["purchase"] is False:
                 review_obj = DealerReview(dealership=dealer_review["dealership"],
                                     name=dealer_review["name"],
                                     purchase=dealer_review["purchase"],
@@ -103,10 +120,35 @@ def get_dealer_reviews_from_cf(url, **kwargs):
             results.append(review_obj)
     return results
 
-# Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
-# - Call get_request() with specified arguments
-# - Get the returned sentiment label such as Positive or Negative
+# get sentiment from reviews using NLU
+"""
+def analyze_review_sentiments(review_text):
+    # Watson NLU configuration
+    url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/37913300-cd75-4515-9fba-6454c1654ffa"
+    api_key = "x7EoJhfYq2uYc_hYUGI4we0H-uZmJzgTJXrpIGhPyrtd"
+    
+    version = '2021-08-01'
+    authenticator = IAMAuthenticator(api_key)
+    nlu = NaturalLanguageUnderstandingV1(
+        version=version, authenticator=authenticator)
+    nlu.set_service_url(url)
+
+    # get sentiment of the review
+    try:
+        response = nlu.analyze(text=review_text, features=Features(
+            sentiment=SentimentOptions())).get_result()
+        print(json.dumps(response))
+        # sentiment_score = str(response["sentiment"]["document"]["score"])
+        sentiment_label = response["sentiment"]["document"]["label"]
+    except:
+        print("Review is too short for sentiment analysis. Assigning default sentiment value 'neutral' instead")
+        sentiment_label = "neutral"
+
+    # print(sentiment_score)
+    print(sentiment_label)
+
+    return sentiment_label
+"""
 
 
 

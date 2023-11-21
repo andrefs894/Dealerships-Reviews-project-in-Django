@@ -56,7 +56,16 @@
                     <h6>{{review.car_make}}</h6>
                 {% endfor %}
             {% else %}
-                <h6>No reviews are available for this dealership.</h6>
+                <h6>There are still no reviews for this dealership.</h6>
+            {% endif %}
+        </div>
+        <div class="container-fluid">
+            {% if user.is_authenticated %}
+                <div class="navbar-header">
+                    <a class="btn btn-link" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
+                </div>
+            {% else %}
+                <h6>You need to login to add a review</h6>
             {% endif %}
         </div>
 
