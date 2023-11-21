@@ -9,11 +9,16 @@ def get_request(url, **kwargs):
     # print(kwargs)
     # print("GET from {} ".format(url))
     try:
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs)
+        if "3000" in url:
+            print("3000")
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                        params={'id': kwargs.get("id")})
+        if "5000" in url:
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                        params={'dealership': kwargs.get("id")})
     except:
         print("Network exception occurred")
-    status_code = response.status_code
+    # status_code = response.status_code
     # print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
     return json_data

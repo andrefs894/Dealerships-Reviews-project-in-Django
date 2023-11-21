@@ -45,15 +45,19 @@
                 </ul>
             </div>
         </nav>
-        <div class="container-fluid">        
-            {% for review in reviews %}
-                <h6>{{review.dealership}}</h6>
-                <h6>{{review.name}}</h6>   
-                <h6>{{review.purchase}}</h6>
-                <h6>{{review.review}}</h6>
-                <h6>{{review.purchase_date}}</h6>
-                <h6>{{review.car_make}}</h6>
-            {% endfor %}
+        <div class="container-fluid">
+            {% if reviews %}       
+                {% for review in reviews %}
+                    <h6>{{review.dealership}}</h6>
+                    <h6>{{review.name}}</h6>   
+                    <h6>{{review.purchase}}</h6>
+                    <h6>{{review.review}}</h6>
+                    <h6>{{review.purchase_date}}</h6>
+                    <h6>{{review.car_make}}</h6>
+                {% endfor %}
+            {% else %}
+                <h6>No reviews are available for this dealership.</h6>
+            {% endif %}
         </div>
 
     </body>
