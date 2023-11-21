@@ -47,15 +47,12 @@
         </nav>
         <div class="container-fluid">
             {% if user.is_authenticated %}
-                <div class="navbar-header">
-                    <a class="btn btn-link" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
-                </div>
+                <a class="btn btn-primary" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
             {% else %}
-                <div class="navbar-header">
-                    <a class="btn btn-link disabled" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
-                    <h6>You need to login to add a review.</h6>
-                </div>
+                <a class="btn btn-primary disabled" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
+                <h6>You need to login to add a review.</h6>
             {% endif %}
+            <hr>
         </div>
         {% if reviews %} 
             {% for review in reviews %}
@@ -66,6 +63,7 @@
                                 <h6><b>{{review.name}} said:</b></h6>
                                 <h6>{{review.review}}</h6>
                                 {% if review.purchase %}
+                                    <hr>
                                     <h6><i>Car purchased: {{review.car_make}} {{review.car_model}} {{review.car_year}}</i></h6>
                                     <h6><i>Purchased in: {{review.purchase_date}}</i></h6>
                                 {% endif %}
