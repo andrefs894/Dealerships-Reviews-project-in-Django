@@ -46,29 +46,39 @@
             </div>
         </nav>
         <div class="container-fluid">
-            {% if reviews %}       
-                {% for review in reviews %}
-                    <h6>{{review.dealership}}</h6>
-                    <h6>{{review.name}}</h6>   
-                    <h6>{{review.purchase}}</h6>
-                    <h6>{{review.review}}</h6>
-                    <h6>{{review.purchase_date}}</h6>
-                    <h6>{{review.car_make}}</h6>
-                {% endfor %}
-            {% else %}
-                <h6>There are still no reviews for this dealership.</h6>
-            {% endif %}
-        </div>
-        <div class="container-fluid">
             {% if user.is_authenticated %}
                 <div class="navbar-header">
                     <a class="btn btn-link" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
                 </div>
             {% else %}
-                <h6>You need to login to add a review</h6>
+                <div class="navbar-header">
+                    <a class="btn btn-link disabled" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
+                    <h6>You need to login to add a review.</h6>
+                </div>
             {% endif %}
         </div>
-
+        {% if reviews %} 
+            {% for review in reviews %}
+                <div class="container-fluid">
+                    <div class="card-columns">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6><b>{{review.name}} said:</b></h6>
+                                <h6>{{review.review}}</h6>
+                                {% if review.purchase %}
+                                    <h6><i>Car purchased: {{review.car_make}} {{review.car_model}} {{review.car_year}}</i></h6>
+                                    <h6><i>Purchased in: {{review.purchase_date}}</i></h6>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="container-fluid">
+                <h5><b>There are still no reviews for this dealership.</b></h5>
+            </div>
+        {% endif %}
     </body>
 
 </html>

@@ -30,7 +30,7 @@ app.use(express.json());
 
 // Define a route to get all dealerships with optional state and ID filters
 app.get('/reviews/get', (req, res) => {
-    const { state, id } = req.query;
+    const { state, dealership } = req.query;
 
     // Create a selector object based on query parameters
     const selector = {};
@@ -38,13 +38,13 @@ app.get('/reviews/get', (req, res) => {
         selector.state = state;
     }
     
-    if (id) {
-        selector.id = parseInt(id); // Filter by "id" with a value of 1
+    if (dealership) {
+        selector.dealership = parseInt(dealership); // Filter by "id" with a value of 1
     }
 
     const queryOptions = {
         selector,
-        limit: 10, // Limit the number of documents returned to 10
+        limit: 20, // Limit the number of documents returned to 10
     };
 
     db.find(queryOptions, (err, body) => {
