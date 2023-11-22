@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
-from .restapis import get_dealers_from_cf, get_request, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_request, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf, post_request
 from .models import CarMake, CarModel, CarDealer, DealerReview
 import logging
 import json
@@ -97,7 +97,7 @@ def get_dealer_details(request, id):
 def add_review(request, id):
     context = {}
     if request.method == 'POST':
-        review_post_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+        review_post_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/post"
         max_id = DealerReview.objects.aggregate(Max('id'))['id__max']
         next_id = max_id + 1
         review = {
@@ -111,9 +111,5 @@ def add_review(request, id):
             "car_model": request.POST["car_model"],
             "car_year": request.POST["car_year"]
         }
-        review=json.dumps(review,default=str)
-        new_payload1 = {}
-        new_payload1["review"] = review
-        print("\nREVIEW:",review)
         post_request(review_post_url, review, id = id)
         return redirect("djangoapp:dealer_details", id = id)

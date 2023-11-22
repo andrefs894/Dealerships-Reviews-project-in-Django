@@ -58,6 +58,27 @@ app.get('/reviews/get', (req, res) => {
     });
 });
 
+app.post('/reviews/post', (req, res) => {
+    if (!req.body) {
+      return res.status(400).json({ message: 'Invalid JSON data' });
+    }
+  
+    // extract review data from request body
+    const reviewData = req.body;
+  
+    // save review data in db
+    db.insert(reviewData, (error, newDocument) => {
+        if (error) {
+            return res.status(500).json({ message: 'Error saving data' });
+        }
+        if (newDocument.ok) {
+            return res.json({ message: 'Data saved successfully' });
+        } else {
+            return res.json({ message: 'Failed to save data' });
+        }
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
