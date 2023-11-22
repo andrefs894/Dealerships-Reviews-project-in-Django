@@ -1,6 +1,9 @@
 import requests
 import json
 from .models import CarDealer, DealerReview
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 from requests.auth import HTTPBasicAuth
 
 
@@ -100,7 +103,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                                     car_make=None,
                                     car_model=None,
                                     car_year=None,
-                                    sentiment=None
+                                    sentiment=analyze_review_sentiments(dealer_review["review"])
                                     )
             else:
                 review_obj = DealerReview(dealership=dealer_review["dealership"],
@@ -112,43 +115,22 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                                     car_make=dealer_review["car_make"],
                                     car_model=dealer_review["car_model"],
                                     car_year=dealer_review["car_year"],
-                                    sentiment=None
+                                    sentiment=analyze_review_sentiments(dealer_review["review"])
                                     )
-            """sentiment = analyze_review_sentiments(review_obj.review)
-            print(sentiment)
-            review_obj.sentiment = sentiment"""
             results.append(review_obj)
     return results
 
 # get sentiment from reviews using NLU
-"""
-def analyze_review_sentiments(review_text):
-    # Watson NLU configuration
-    url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/37913300-cd75-4515-9fba-6454c1654ffa"
-    api_key = "x7EoJhfYq2uYc_hYUGI4we0H-uZmJzgTJXrpIGhPyrtd"
-    
+def analyze_review_sentiments(review):
+    url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/6ca8aa54-1444-4f73-b4f9-813129b34b32"
+    api_key = "xAAVCcEcppvZC2nAjcPu1xOvRjEPHa28etFJ2BsmOVT3"   
     version = '2021-08-01'
     authenticator = IAMAuthenticator(api_key)
-    nlu = NaturalLanguageUnderstandingV1(
-        version=version, authenticator=authenticator)
+    nlu = NaturalLanguageUnderstandingV1(version=version, authenticator=authenticator)
     nlu.set_service_url(url)
-
-    # get sentiment of the review
     try:
-        response = nlu.analyze(text=review_text, features=Features(
-            sentiment=SentimentOptions())).get_result()
-        print(json.dumps(response))
-        # sentiment_score = str(response["sentiment"]["document"]["score"])
+        response = nlu.analyze(text=review, features=Features(sentiment=SentimentOptions())).get_result()
         sentiment_label = response["sentiment"]["document"]["label"]
     except:
-        print("Review is too short for sentiment analysis. Assigning default sentiment value 'neutral' instead")
         sentiment_label = "neutral"
-
-    # print(sentiment_score)
-    print(sentiment_label)
-
     return sentiment_label
-"""
-
-
-

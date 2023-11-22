@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
 from .restapis import get_dealers_from_cf, get_request, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf
-from .models import CarMake, CarModel, CarDealer
+from .models import CarMake, CarModel, CarDealer, DealerReview
 import logging
 import json
 
@@ -73,7 +73,7 @@ def registration_request(request):
 def get_dealerships(request):
     if request.method == "GET":
         context = {}
-        url = "https://andrefs894-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://andrefs894-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url)
         context['dealerships'] = dealerships
         dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
@@ -83,47 +83,37 @@ def get_dealerships(request):
 def get_dealer_details(request, id):
     if request.method == "GET":
         context = {}
-        dealer_url = "https://andrefs894-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer_url = "https://andrefs894-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
         context["dealer"] = dealer
-        review_url = "https://andrefs894-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
+        review_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
         reviews = get_dealer_reviews_from_cf(review_url, id=id)
         context["reviews"] = reviews
+        cars = CarModel.objects.all()
+        print(cars)
         return render(request, 'djangoapp/dealer_details.html', context)
 
 # add review view
 def add_review(request, id):
     context = {}
-    url = "https://andrefs894-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-    dealer = get_dealer_by_id_from_cf(url, id)
-    context["dealer"] = dealer    
-    if request.method == 'GET':
-        # Get cars for the dealer
-        cars = CarModel.objects.all()
-        print(cars)
-        context["cars"] = cars
-        return render(request, 'djangoapp/add_review.html', context)
-    
-    elif request.method == 'POST':
-        if request.user.is_authenticated:
-            car_id = request.POST["car"]
-            car = CarModel.objects.get(pk=car_id)
-            review_post_url = "5000-url/api/post_review"
-            review = {
-                "id":id,
-                "time":datetime.utcnow().isoformat(),
-                "name":request.user.username,
-                "dealership":id,                
-                "review": request.POST["content"],
-                "purchase": True,  # Extract purchase info from POST
-                "purchase_date":request.POST["purchasedate"],  # Extract purchase date from POST
-                "car_make": car.car_make.name,  # Extract car make from POST
-                "car_model": car.name,  # Extract car model from POST
-                "car_year": int(car.year.strftime("%Y")),  # Extract car year from POST
-            }
-            review=json.dumps(review,default=str)
-            new_payload1 = {}
-            new_payload1["review"] = review
-            print("\nREVIEW:",review)
-            post_request(review_post_url, review, id = id)
+    if request.method == 'POST':
+        review_post_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+        max_id = DealerReview.objects.aggregate(Max('id'))['id__max']
+        next_id = max_id + 1
+        review = {
+            "id": next_id,
+            "dealership": id,
+            "name": request.user.username,
+            "review": request.POST["review"],
+            "purchase": request.POST["purchase"],
+            "purchase_date": request.POST["purchase_date"],
+            "car_make": request.POST["car_make"],
+            "car_model": request.POST["car_model"],
+            "car_year": request.POST["car_year"]
+        }
+        review=json.dumps(review,default=str)
+        new_payload1 = {}
+        new_payload1["review"] = review
+        print("\nREVIEW:",review)
+        post_request(review_post_url, review, id = id)
         return redirect("djangoapp:dealer_details", id = id)
