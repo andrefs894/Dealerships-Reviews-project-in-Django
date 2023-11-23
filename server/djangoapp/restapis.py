@@ -9,8 +9,6 @@ from requests.auth import HTTPBasicAuth
 
 # http get requests
 def get_request(url, api_key=False, **kwargs):
-    # print(kwargs)
-    # print("GET from {} ".format(url))
     if api_key:
         try:
             if "3000" in url:
@@ -33,17 +31,16 @@ def get_request(url, api_key=False, **kwargs):
                                             params={'dealership': kwargs.get("id")})
         except:
             print("Network exception occurred")
-    # status_code = response.status_code
-    # print("With status {} ".format(status_code))
+
     json_data = json.loads(response.text)
     return json_data
 
 # http post requests
 def post_request(url, json_payload, **kwargs):
-    #print(url)
-    #print(json_payload)
-    #print(kwargs)
-    response = requests.post(url, params=kwargs, json=json_payload)
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    response = requests.post(url, headers=headers, params=kwargs, data=json_payload)
     print(response.text)
     return response
 

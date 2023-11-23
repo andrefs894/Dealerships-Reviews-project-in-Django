@@ -62,7 +62,13 @@
                             <div class="card-body">
                                 <h6><b>{{review.name}} said:</b></h6>
                                 <h6>{{review.review}}</h6>
-                                <h6>{{review.sentiment}}</h6>
+                                {% if review.sentiment == 'positive' %}
+                                    <h6 style="color:green"><b>Positive</b></h6>
+                                {% elif review.sentiment == 'negative' %}
+                                    <h6 style="color:red"><b>Negative</b></h6>
+                                {% else %}
+                                    <h6 style="color:grey"><b>Neutral</b></h6>
+                                {% endif %}
                                 {% if review.purchase %}
                                     <hr>
                                     <h6><i>Car purchased: {{review.car_make}} {{review.car_model}} {{review.car_year}}</i></h6>

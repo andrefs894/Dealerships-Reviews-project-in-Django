@@ -89,8 +89,6 @@ def get_dealer_details(request, id):
         review_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
         reviews = get_dealer_reviews_from_cf(review_url, id=id)
         context["reviews"] = reviews
-        cars = CarModel.objects.all()
-        print(cars)
         return render(request, 'djangoapp/dealer_details.html', context)
 
 # add review view
@@ -112,6 +110,7 @@ def add_review(request, id):
         review_post_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/post"
         review_get_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
         
+        # get max review id to save next review with next available id
         reviews = get_dealer_reviews_from_cf(review_get_url)
         reviews_id = []
         for review in reviews:
@@ -119,6 +118,7 @@ def add_review(request, id):
         max_id = max(reviews_id)
         next_id = max_id + 1
 
+        # review dictionary to post request
         if request.POST["purchase"] == 'false':
             review = {
                 "id": next_id,
@@ -141,7 +141,6 @@ def add_review(request, id):
             }
 
         json_review=json.dumps(review)
-        #print("AAAAAAAAAAAAAAAAAA")
-        #print(type(json_review))
+        print(json_review)
         post_request(review_post_url, json_review, id = id)
         return redirect("djangoapp:dealer_details", id = id)
