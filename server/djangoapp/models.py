@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
+import datetime
 
 # user class
 class User(models.Model):
@@ -30,7 +31,10 @@ class CarModel(models.Model):
     ]
     car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE, related_name='car_models')
     car_type = models.CharField(max_length=5, choices=TYPE_CHOICES)
-    year = models.DateField()
+    YEAR_SELECT = []
+    for r in range(1969, (datetime.datetime.now().year+1)):
+        YEAR_SELECT.append((r, r))
+    year = models.IntegerField(('year'), choices=YEAR_SELECT, default=datetime.datetime.now().year)
 
     def __str__(self):
         return self.name

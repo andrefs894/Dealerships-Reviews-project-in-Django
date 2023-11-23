@@ -100,11 +100,17 @@ def add_review(request, id):
     dealer = get_dealer_by_id_from_cf(url, id)
     context["dealer"] = dealer
     if request.method == 'GET':
+        cars = CarModel.objects.all()
+        context["cars"] = cars
         return render(request, 'djangoapp/add_review.html', context)
-    if request.method == 'POST':
+    elif request.method == 'POST':
         review_post_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/post"
-        max_id = DealerReview.objects.aggregate(Max('id'))['id__max']
-        next_id = max_id + 1
+        review_get_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
+        reviews = get_dealer_reviews_from_cf(review_get_url, id=id)
+        reviews_id = {}
+        for review in reviews:
+            print(review.car_make)
+        #print(reviews_id)
         review = {
             "id": next_id,
             "dealership": id,
@@ -119,4 +125,3 @@ def add_review(request, id):
         review=json.dumps(review,default=str)
         post_request(review_post_url, review, id = id)
         return redirect("djangoapp:dealer_details", id = id)
-    

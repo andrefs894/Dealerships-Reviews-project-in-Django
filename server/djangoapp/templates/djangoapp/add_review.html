@@ -48,6 +48,7 @@
         <form action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
             <div class="container-fluid">
                 <div class="form-group">
+                    {% csrf_token %}
                     <h1>Add Review</h1>
                     <h4>{{dealer.full_name}}</h4>
                     <hr>
@@ -55,14 +56,14 @@
                         <tbody>
                             <tr>
                                 <td><label for="review"><b>Review</b></label></td>
-                                <td><input type="textarea" placeholder="Review: " name="review" required></td>
+                                <td><textarea placeholder="Review: " name="review" required></textarea></td>
                             </tr>
                             <tr>
                                 <td><label for="purchase"><b>Purchase</b></label></td>
                                 <td>
                                     <select id="purchase" name="purchase" required>
                                         <option value="true">Yes</option>
-                                        <option value="false" selected>No</option>
+                                        <option value="false">No</option>
                                     </select>
                                 </td>
                             </tr>
@@ -73,25 +74,22 @@
                             <tbody>
                                 <tr>
                                     <td><label for="purchase_date"><b>Purchase Date</b></label></td>
-                                    <td><input type="text" placeholder="Purchase Date:" name="purchase_date" required></td>
+                                    <td><input type="date" placeholder="Purchase Date:" name="purchase_date"></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="car_make"><b>Car Make</b></label></td>
-                                    <td><input type="text" placeholder="Car Make:" name="car_make" required></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="car_model"><b>Car Model</b></label></td>
-                                    <td><input type="text" placeholder="Car Model:" name="car_model" required></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="car_year"><b>Car Year</b></label></td>
-                                    <td><input type="text" placeholder="Car Year:" name="car_year" required></td>
+                                    <td><label for="car"><b>Car</b></label></td>
+                                    <td>
+                                        <select name="car" id="car">
+                                            {% for car in cars %}
+                                                <option value="{{ car.id }}">{{ car.car_make.name }} {{ car.name }} {{ car.year }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>                                       
                     </div>
-                    {% csrf_token %}
-                    <button class="btn btn-primary" type="submit">Add Review</button></td>
+                    <button class="btn btn-primary" type="submit">Add Review</button>
                 </div>
             </div>
         </form>
@@ -104,6 +102,9 @@
                     conditionalInputs.style.display = 'none';
                 }
             });
+            window.onload = function() {
+                document.getElementById('purchase').value = 'false';
+            }
         </script>
     </body>
 </html>
