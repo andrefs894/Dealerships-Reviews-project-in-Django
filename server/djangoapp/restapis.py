@@ -40,10 +40,11 @@ def get_request(url, api_key=False, **kwargs):
 
 # http post requests
 def post_request(url, json_payload, **kwargs):
-    try:
-        response = requests.post(url, params=kwargs, json=json_payload)
-    except:
-        print("Network exception occurred")
+    #print(url)
+    #print(json_payload)
+    #print(kwargs)
+    response = requests.post(url, params=kwargs, json=json_payload)
+    print(response.text)
     return response
 
 # get dealers from cloud function
@@ -98,7 +99,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                                     name=dealer_review["name"],
                                     purchase=dealer_review["purchase"],
                                     review=dealer_review["review"],
-                                    id=None,
+                                    id=dealer_review["id"],
                                     purchase_date=None,
                                     car_make=None,
                                     car_model=None,
