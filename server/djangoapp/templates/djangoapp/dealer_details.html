@@ -53,37 +53,29 @@
                 <h6>You need to login to add a review.</h6>
             {% endif %}
             <hr>
-        </div>
-        {% if reviews %} 
-            {% for review in reviews %}
-                <div class="container-fluid">
-                    <div class="card-columns">
+            {% if reviews %} 
+                <div class="card-columns">
+                    {% for review in reviews %}
                         <div class="card">
+                            <img src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png" class="card-img-left" style="height: 30px; width: 30px">
                             <div class="card-body">
-                                <h6><b>{{review.name}} said:</b></h6>
-                                <h6>{{review.review}}</h6>
-                                {% if review.sentiment == 'positive' %}
-                                    <h6 style="color:green"><b>Positive</b></h6>
-                                {% elif review.sentiment == 'negative' %}
-                                    <h6 style="color:red"><b>Negative</b></h6>
-                                {% else %}
-                                    <h6 style="color:grey"><b>Neutral</b></h6>
-                                {% endif %}
                                 {% if review.purchase %}
+                                    <h5 class="card-title"><b>{{review.car_make}} {{review.car_model}} {{review.car_year}}</b></h5>
+                                    <h6><i>purchased in: {{review.purchase_date}}</i></h6>    
                                     <hr>
-                                    <h6><i>Car purchased: {{review.car_make}} {{review.car_model}} {{review.car_year}}</i></h6>
-                                    <h6><i>Purchased in: {{review.purchase_date}}</i></h6>
-                                {% endif %}
+                                    {% endif %}
+                                <h6 class="card-text"><b>{{review.name}} said:</b></h6>
+                                <h6 class="card-text">{{review.review}}</h6>
                             </div>
-                        </div>
-                    </div>
+                        </div>          
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="container-fluid">
-                <h5><b>There are still no reviews for this dealership.</b></h5>
-            </div>
-        {% endif %}
+            {% else %}         
+                <div class="container-fluid">
+                    <h5><b>There are still no reviews for this dealership.</b></h5>
+                </div>
+            {% endif %}
+        </div>
     </body>
 
 </html>
