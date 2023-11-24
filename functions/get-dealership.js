@@ -3,12 +3,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 const Cloudant = require('@cloudant/cloudant');
 
-// Initialize Cloudant connection with IAM authentication
+// cloudant connection with IAM authentication
 async function dbCloudantConnect() {
     try {
         const cloudant = Cloudant({
-            plugins: { iamauth: { iamApiKey: 'uFeWPUC_w6Qg79y295QN_8TS6Pd8WBAoj9QvIFbSPFBC' } }, // Replace with your IAM API key
-            url: 'https://b69568f1-7faa-40da-a28a-905167584d3d-bluemix.cloudantnosqldb.appdomain.cloud', // Replace with your Cloudant URL
+            plugins: { iamauth: { iamApiKey: 'uFeWPUC_w6Qg79y295QN_8TS6Pd8WBAoj9QvIFbSPFBC' } },
+            url: 'https://b69568f1-7faa-40da-a28a-905167584d3d-bluemix.cloudantnosqldb.appdomain.cloud',
         });
 
         const db = cloudant.use('dealerships');
@@ -28,23 +28,23 @@ let db;
 
 app.use(express.json());
 
-// Define a route to get all dealerships with optional state and ID filters
+// define a route to get all dealerships
 app.get('/dealerships/get', (req, res) => {
     const { state, id } = req.query;
 
-    // Create a selector object based on query parameters
+    // create a selector object based on query parameters
     const selector = {};
     if (state) {
         selector.state = state;
     }
     
     if (id) {
-        selector.id = parseInt(id); // Filter by "id" with a value of 1
+        selector.id = parseInt(id);
     }
 
     const queryOptions = {
         selector,
-        limit: 20, // Limit the number of documents returned to 10
+        limit: 20,
     };
 
     db.find(queryOptions, (err, body) => {
