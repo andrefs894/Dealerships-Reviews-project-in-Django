@@ -45,7 +45,7 @@
                 </ul>
             </div>
         </nav>
-        <form action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
+        <form id="form" action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
             <div class="container-fluid">
                 {% csrf_token %}
                 <h1>Add a review for {{dealer.full_name}}</h1>
@@ -79,6 +79,14 @@
                     conditionalInputs.style.display = 'block';
                 } else {
                     conditionalInputs.style.display = 'none';
+                }
+            });
+            document.getElementById('form').addEventListener('submit', function(event) {
+                var checkbox = document.getElementById('checkbox');
+                if (!checkbox.checked) {
+                    checkbox.value = 'off';
+                } else {
+                    checkbox.value = 'on';
                 }
             });
         </script>

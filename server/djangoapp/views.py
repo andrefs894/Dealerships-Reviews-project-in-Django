@@ -119,15 +119,7 @@ def add_review(request, id):
         next_id = max_id + 1
 
         # review dictionary to post request
-        if request.POST["purchase"] == 'false':
-            review = {
-                "id": next_id,
-                "dealership": id,
-                "name": request.user.username,
-                "review": request.POST["review"],
-                "purchase": False,
-            }
-        else:
+        if request.POST.get("purchase") == 'on':
             review = {
                 "id": next_id,
                 "dealership": id,
@@ -139,8 +131,15 @@ def add_review(request, id):
                 "car_model": car.name,
                 "car_year": car.year
             }
+        else:
+            review = {
+                "id": next_id,
+                "dealership": id,
+                "name": request.user.username,
+                "review": request.POST["review"],
+                "purchase": False,
+            }
 
         json_review=json.dumps(review)
-        print(json_review)
         post_request(review_post_url, json_review, id = id)
         return redirect("djangoapp:dealer_details", id = id)

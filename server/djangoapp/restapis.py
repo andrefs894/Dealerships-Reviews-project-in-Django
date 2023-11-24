@@ -41,7 +41,6 @@ def post_request(url, json_payload, **kwargs):
         'Content-Type': 'application/json',
     }
     response = requests.post(url, headers=headers, params=kwargs, data=json_payload)
-    print(response.text)
     return response
 
 # get dealers from cloud function
