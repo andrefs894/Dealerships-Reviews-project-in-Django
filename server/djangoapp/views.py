@@ -73,7 +73,7 @@ def registration_request(request):
 def get_dealerships(request):
     if request.method == "GET":
         context = {}
-        url = "https://andrefs894-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://andrefs894-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url)
         context['dealerships'] = dealerships
         dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
@@ -83,10 +83,10 @@ def get_dealerships(request):
 def get_dealer_details(request, id):
     if request.method == "GET":
         context = {}
-        dealer_url = "https://andrefs894-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer_url = "https://andrefs894-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
         context["dealer"] = dealer
-        review_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
+        review_url = "https://andrefs894-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
         reviews = get_dealer_reviews_from_cf(review_url, id=id)
         context["reviews"] = reviews
         return render(request, 'djangoapp/dealer_details.html', context)
@@ -94,7 +94,7 @@ def get_dealer_details(request, id):
 # add review view
 def add_review(request, id):
     context = {}
-    url = "https://andrefs894-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+    url = "https://andrefs894-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
     dealer = get_dealer_by_id_from_cf(url, id)
     context["dealer"] = dealer
 
@@ -107,8 +107,8 @@ def add_review(request, id):
         car_id = request.POST["car"]
         car = CarModel.objects.get(pk=car_id)
 
-        review_post_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/post"
-        review_get_url = "https://andrefs894-5000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
+        review_post_url = "https://andrefs894-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/post"
+        review_get_url = "https://andrefs894-5000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/reviews/get"
         
         # get max review id to save next review with next available id
         reviews = get_dealer_reviews_from_cf(review_get_url)
